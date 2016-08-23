@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:id="@+id/main_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.k4kya.customviews.MainActivity">
+
+    <com.k4kya.validatingformview.FormView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <com.k4kya.validatingformview.FormFieldView
+            android:id="@+id/field_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorMessage="Must be Amal"
+            app:label="Name"
+            app:placeholder="Full name"
+            app:type="string" />
+
+        <com.k4kya.validatingformview.FormFieldView
+            android:id="@+id/field_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:errorMessage="Must be at least 8 chars"
+            app:label="Password"
+            app:type="password" />
+
+        <com.k4kya.validatingformview.FormFieldView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:label="Phone Number"
+            app:type="phone" />
+
+    </com.k4kya.validatingformview.FormView>
+
+    <Button
+        android:id="@+id/btn_next"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:enabled="false"
+        android:text="NEXT" />
+
+    <Button
+        android:id="@+id/btn_add_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add Field" />
+</LinearLayout>
