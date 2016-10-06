@@ -10,5 +10,6 @@
             <enum name="phone" value="3" />
         </attr>
         <attr name="errorMessage" format="string" />
+        <attr name="minChars" format="integer" />
     </declare-styleable>
 </resources>

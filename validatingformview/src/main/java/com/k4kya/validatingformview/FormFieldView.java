@@ -12,6 +12,7 @@ import android.widget.*;
 
 public class FormFieldView extends LinearLayout implements ValidatingFormField {
 
+    private final int minChars;
     private FormValidator validator;
     private TextView formLabel;
     private TextView formError;
@@ -27,6 +28,7 @@ public class FormFieldView extends LinearLayout implements ValidatingFormField {
         String placeholder = attributes.getString(R.styleable.FormFieldView_placeholder);
         String errorMessage = attributes.getString(R.styleable.FormFieldView_errorMessage);
         int type = attributes.getInt(R.styleable.FormFieldView_type, 0);
+        minChars = attributes.getInt(R.styleable.FormFieldView_minChars, 0);
         int inputTypeCode = InputType.TYPE_CLASS_TEXT;
         switch (type) {
             case 0:
@@ -42,8 +44,60 @@ public class FormFieldView extends LinearLayout implements ValidatingFormField {
                 inputTypeCode = InputType.TYPE_CLASS_PHONE;
         }
         attributes.recycle();
-        setupFields(context, label, placeholder, inputTypeCode, type, errorMessage);
+        setupField(context);
+        setupLabel(label);
+        setupPlaceholder(placeholder);
+        setupInputType(inputTypeCode, type);
+        setupErrorMessage(errorMessage);
+        setupHooks(minChars);
+    }
 
+    private void setupField(Context context) {
+        setOrientation(VERTICAL);
+        setGravity(Gravity.START);
+        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        inflater.inflate(R.layout.form_field_view, this, true);
+        formField = (EditText) getChildAt(1);
+    }
+
+    private void setupErrorMessage(String errorMessage) {
+        formError = (TextView) getChildAt(2);
+        if (errorMessage != null) {
+            formError.setText(errorMessage);
+        }
+    }
+
+    private void setupInputType(int inputTypeCode, int type) {
+        formField.setInputType(inputTypeCode);
+        if (type == 2) {
+            configureFieldAsPassword();
+        }
+    }
+
+    private void configureFieldAsPassword() {
+        showPassword = (CheckBox) getChildAt(3);
+        showPassword.setVisibility(VISIBLE);
+        showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                int cursor = formField.getSelectionStart();
+                if (checked) {
+                    formField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
+                } else {
+                    formField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+                }
+                formField.setSelection(cursor);
+            }
+        });
+    }
+
+    private void setupPlaceholder(String placeholder) {
+        formField.setHint(placeholder);
+    }
+
+    private void setupLabel(String label) {
+        formLabel = (TextView) getChildAt(0);
+        formLabel.setText(label);
     }
 
     @Override
@@ -63,7 +117,14 @@ public class FormFieldView extends LinearLayout implements ValidatingFormField {
 
     @Override
     public boolean validate() {
-        return this.validator == null || validator.validate(formField.getText().toString());
+        if (preValidationHooks()) {
+            return this.validator == null || validator.validate(formField.getText().toString());
+        }
+        return false;
+    }
+
+    private boolean preValidationHooks() {
+        return minChars == 0 || (formField.getText().length() >= minChars);
     }
 
     @Override
@@ -73,41 +134,7 @@ public class FormFieldView extends LinearLayout implements ValidatingFormField {
 
     }
 
-    private void setupFields(Context context, String label, String placeholder, int inputTypeCode, int type, String errorMessage) {
-        setOrientation(VERTICAL);
-        setGravity(Gravity.START);
-
-        LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.form_field_view, this, true);
-        formLabel = (TextView) getChildAt(0);
-        formField = (EditText) getChildAt(1);
-        formError = (TextView) getChildAt(2);
-
-        if (errorMessage != null) {
-            formError.setText(errorMessage);
-        }
-
-        formLabel.setText(label);
-        formField.setHint(placeholder);
-        formField.setInputType(inputTypeCode);
-
-        if (type == 2) {
-            showPassword = (CheckBox) getChildAt(3);
-            showPassword.setVisibility(VISIBLE);
-            showPassword.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                    int cursor = formField.getSelectionStart();
-                    if (checked) {
-                        formField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD);
-                    } else {
-                        formField.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-                    }
-                    formField.setSelection(cursor);
-                }
-            });
-        }
-
+    private void setupHooks(final int minChars) {
         textWatcher = new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -125,7 +152,6 @@ public class FormFieldView extends LinearLayout implements ValidatingFormField {
                 onValueChanged(s);
             }
         };
-
         formField.addTextChangedListener(textWatcher);
     }
 

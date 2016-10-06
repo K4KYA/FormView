@@ -32,15 +32,19 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:errorMessage="Must be at least 8 chars"
+            app:minChars="8"
             app:label="Password"
             app:type="password" />
 
         <com.k4kya.validatingformview.FormFieldView
+            android:id="@+id/phone_no"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:label="Phone Number"
-            app:type="phone" />
+            app:errorMessage="Must be at least 9 chars"
+            app:type="phone"
+            app:minChars="9"/>
 
     </com.k4kya.validatingformview.FormView>
 

@@ -40,5 +40,9 @@ public class MainActivity extends AppCompatActivity implements MainView {
                 return (value.equals("Amal"));
             }
         });
+        FormFieldView phone = (FormFieldView) findViewById(R.id.phone_no);
+        presenter.addFormField(phone);
+        FormFieldView password = (FormFieldView) findViewById(R.id.field_password);
+        presenter.addFormField(password);
     }
 }

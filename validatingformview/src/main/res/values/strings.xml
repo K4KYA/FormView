@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ValidatingFormView</string>
+    <string name="vff_error_string_default">This field contains an error</string>
+    <string name="vff_show_password_default">Show password</string>
 </resources>

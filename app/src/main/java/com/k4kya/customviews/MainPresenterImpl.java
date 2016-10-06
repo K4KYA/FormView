@@ -41,6 +41,11 @@ public class MainPresenterImpl implements MainPresenter, FormFieldChangedListene
     }
 
     @Override
+    public void addFormField(ValidatingFormField formField) {
+        addFormField(formField, null);
+    }
+
+    @Override
     public void onChange(String s) {
         validateForm();
     }

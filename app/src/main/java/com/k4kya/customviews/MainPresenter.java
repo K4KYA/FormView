@@ -6,4 +6,5 @@ import com.k4kya.validatingformview.ValidatingFormField;
 public interface MainPresenter {
     void validateForm();
     void addFormField(ValidatingFormField formField, FormValidator validator);
+    void addFormField(ValidatingFormField formField);
 }
